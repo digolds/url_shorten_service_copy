@@ -25,3 +25,6 @@ class TestRedirectFrom(unittest.TestCase):
         response = redirect_from.redirect_from(event, context)
         self.assertEqual(response['statusCode'], 301)
         self.assertEqual(response['headers']['Location'], original_url)
+
+if __name__ == '__main__':
+    unittest.main()
