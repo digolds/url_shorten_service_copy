@@ -1,7 +1,7 @@
 version: 0.2
 env:
   variables:
-    S3_BUCKET: "codepipeline-us-east-2-709900867590"
+    S3_BUCKET: "codepipeline-us-east-2-709900867590/master_workflow/serverless"
 
 phases:
   install:
@@ -16,8 +16,8 @@ phases:
     commands:
       - cd handlers/
       - zip -r $CODEBUILD_RESOLVED_SOURCE_VERSION.zip .
-      - aws s3 cp $CODEBUILD_RESOLVED_SOURCE_VERSION.zip s3://$S3_BUCKET/master_workflow/serverless/ --sse aws:kms
+      - aws s3 cp $CODEBUILD_RESOLVED_SOURCE_VERSION.zip s3://$S3_BUCKET/ --sse aws:kms
 
   post_build:
     commands:
-      - echo "post_build step"
+      - aws lambda update-function-code --function-name redirect_from --s3-bucket $S3_BUCKET --s3-key $CODEBUILD_RESOLVED_SOURCE_VERSION.zip
