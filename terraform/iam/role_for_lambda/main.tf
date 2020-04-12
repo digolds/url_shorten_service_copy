@@ -57,16 +57,17 @@ data "aws_iam_policy_document" "lambda_access_to_aws_services" {
   }
 
   statement {
-      sid = "LambdaAccessToDynamoDB"
-      effect = "Allow"
+    sid    = "LambdaAccessToDynamoDB"
+    effect = "Allow"
 
-      actions = [
-          "dynamodb:GetItem",
-      ]
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem"
+    ]
 
-      resources = [
-          data.terraform_remote_state.urls_table_state.outputs.table_obj.arn,
-      ]
+    resources = [
+      data.terraform_remote_state.urls_table_state.outputs.table_obj.arn,
+    ]
   }
 }
 
