@@ -1,8 +1,7 @@
 version: 0.2
 env:
   variables:
-    S3_BUCKET: "movies-api-deployment-packages"
-    PACKAGE: "github.com/mlabouardy/lambda-codepipeline"
+    S3_BUCKET: "arn:aws:s3:::codepipeline-us-east-2-709900867590"
 
 phases:
   install:
@@ -15,7 +14,8 @@ phases:
 
   build:
     commands:
-      - echo "build step"
+      - zip -r $CODEBUILD_RESOLVED_SOURCE_VERSION.zip handlers/
+      - aws s3 cp $CODEBUILD_RESOLVED_SOURCE_VERSION.zip s3://$S3_BUCKET/serverless
 
   post_build:
     commands:
