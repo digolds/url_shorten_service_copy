@@ -14,7 +14,7 @@ resource "aws_api_gateway_rest_api" "api" {
 resource "aws_api_gateway_resource" "proxy" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
-  path_part   = "{proxy+}"
+  path_part   = "{id+}"
 }
 
 resource "aws_api_gateway_method" "proxy" {
@@ -51,19 +51,19 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
 resource "aws_api_gateway_deployment" "staging" {
   depends_on = [
-      aws_api_gateway_integration.lambda,
-      aws_api_gateway_integration.lambda_root,
-      ]
+    aws_api_gateway_integration.lambda,
+    aws_api_gateway_integration.lambda_root,
+  ]
 
   rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name = "staging"
+  stage_name  = "staging"
 }
 
 resource "aws_lambda_permission" "apigw" {
-  statement_id = "AllowAPIGatewayInvoke"
-  action = "lambda:InvokeFunction"
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
   function_name = data.terraform_remote_state.lambda_functions_state.outputs.redirect_from_function_obj.function_name
-  principal = "apigateway.amazonaws.com"
+  principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
