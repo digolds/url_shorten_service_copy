@@ -11,7 +11,7 @@ phases:
 
   pre_build:
     commands:
-      - python -B -m unittest -v tests.test_generate_a_shorter_url.TestGenerateId
+      - python -B -m unittest -v tests/*
 
   build:
     commands:
