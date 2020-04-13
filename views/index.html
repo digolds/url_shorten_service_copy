@@ -10,22 +10,43 @@
     <script src="/js/uikit.min.js"></script>
     <script src="/js/uikit-icons.min.js"></script>
     <script>
-        $(function () {
-            
-        });
-    </script>
+            $(function () {
+              $( "form" ).submit(function( event ) {
+                $( "#submitBtn" ).click(function() {
+                var url = $("#myInput").val();
+                $.ajax(
+                  {
+                  type: "POST",
+                  url : "https://mv0kavnk18.execute-api.us-east-2.amazonaws.com/staging",
+                  dataType: "json",
+                  data: JSON.stringify({ "original_url":  url}),
+                  contentType : 'application/json',
+                  crossDomain : true,
+                  success: function(data){
+                    console.log(data)
+                  }
+                  }
+                );
+              });
+                event.preventDefault();
+              });
+              
+            });
+          </script>
 </head>
 <body>
-    <div id="main" class='uk-container uk-container-small'>
-        <div class="uk-flex uk-flex-center uk-position-center">
-            <h1><a href="https://github.com/digolds/digwebs" target="_blank">digwebs</a> - A Minimal Web Framework!</h1>
-            <div class="uk-flex uk-flex-center">
-                <ul class="uk-iconnav">
-                    <li><a href="/views/blogs" uk-icon="icon: copy" title="Blog"></a></li>
-                </ul>
+        <div id="main" class='uk-container uk-container-small'>
+                <div class="uk-flex uk-flex-center uk-position-center">
+                    <form class="uk-grid-small" uk-grid>
+                        <div class="uk-width-large">
+                            <input id ="myInput" class="uk-input" type="text" placeholder="Url to shorten">
+                        </div>
+                        <div class="uk-width-auto">
+                            <button id="submitBtn" class="uk-button uk-button-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-    </div>
 </body>
 
 </html>
