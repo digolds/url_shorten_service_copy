@@ -30,7 +30,7 @@ class TestGenerateAShorterUrl(unittest.TestCase):
         os.environ['TABLE_NAME'] = 'urls'
         response_result = generate_a_shorter_url.generate_a_shorter_url(event, context)
         dynamo = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
-        response = dynamo.get_item(Key={'Id': response_result.get('body', {}).get('Id', '')})
+        response = dynamo.get_item(Key={'Id': json.loads(response_result.get('body', '')).get('Id', '')})
 
         item = response['Item']
         self.assertEqual(item['original_url'],
