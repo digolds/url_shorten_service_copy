@@ -28,9 +28,9 @@ class TestGenerateAShorterUrl(unittest.TestCase):
         event = {'body': json.dumps({"original_url": "https://baidu.com"})}
         context = {}
         os.environ['TABLE_NAME'] = 'urls'
-        id = generate_a_shorter_url.generate_a_shorter_url(event, context)
+        response_result = generate_a_shorter_url.generate_a_shorter_url(event, context)
         dynamo = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
-        response = dynamo.get_item(Key={'Id': id})
+        response = dynamo.get_item(Key={'Id': response_result.get('body', {}).get('Id', '')})
 
         item = response['Item']
         self.assertEqual(item['original_url'],
