@@ -10,43 +10,66 @@
     <script src="/js/uikit.min.js"></script>
     <script src="/js/uikit-icons.min.js"></script>
     <script>
-            $(function () {
-              $( "form" ).submit(function( event ) {
-                $( "#submitBtn" ).click(function() {
-                var url = $("#myInput").val();
-                $.ajax(
-                  {
-                  type: "POST",
-                  url : "https://mv0kavnk18.execute-api.us-east-2.amazonaws.com/staging",
-                  dataType: "json",
-                  data: JSON.stringify({ "original_url":  url}),
-                  contentType : 'application/json',
-                  crossDomain : true,
-                  success: function(data){
-                    console.log(data)
-                  }
-                  }
-                );
-              });
-                event.preventDefault();
-              });
-              
+        const copyToClipboard = str => {
+            const el = document.createElement('textarea');
+            el.value = str;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+        };
+
+        $(function () {
+            var $dropdown = UIkit.dropdown('.uk-dropdown', {});
+            $("#copy_shorter_url").click(function () {
+                copyToClipboard($("#shorten_url_id").attr("href"));
+                UIkit.notification('Copy to paste success! \n' + $("#shorten_url_id").attr("href"));
             });
-          </script>
+            $("#submitBtn").click(function () {
+                var url = $("#myInput").val();
+                var endPoint = 'https://mv0kavnk18.execute-api.us-east-2.amazonaws.com/staging';
+                $.post(endPoint,
+                    JSON.stringify({ "original_url": url }),
+                    function (data, status, jqXHR) {
+                        var newUrl = endPoint + "/" + data.Id;
+                        $("#shorten_url_id").attr("href", newUrl);
+                        $("#shorten_url_id").text(newUrl);
+                        console.log(data);
+                        $dropdown.show();
+                    });
+            });
+            $("form").submit(function (event) {
+                event.preventDefault();
+            });
+        });
+    </script>
 </head>
 <body>
-        <div id="main" class='uk-container uk-container-small'>
-                <div class="uk-flex uk-flex-center uk-position-center">
-                    <form class="uk-grid-small" uk-grid>
-                        <div class="uk-width-large">
-                            <input id ="myInput" class="uk-input" type="text" placeholder="Url to shorten">
-                        </div>
-                        <div class="uk-width-auto">
-                            <button id="submitBtn" class="uk-button uk-button-primary">Submit</button>
-                        </div>
-                    </form>
+    <div id="main" class='uk-container uk-container-small'>
+        <div class="uk-flex uk-flex-center uk-position-center">
+            <form class="uk-grid-small" uk-grid>
+                <div class="uk-width-large">
+                    <input id="myInput" class="uk-input" type="text" placeholder="Url to shorten">
                 </div>
-            </div>
+                <div class="uk-width-auto">
+                    <button id="submitBtn" class="uk-button uk-button-primary">Submit</button>
+                </div>
+                <div class="uk-width-1-1">
+                    <div class="uk-margin-top" uk-dropdown="mode:click">
+                        <div>
+                            <div uk-grid>
+                                <div class="uk-width-auto">
+                                    <a id="shorten_url_id" href=""></a>
+                                </div>
+                                <div class="uk-width-auto">
+                                    <button id="copy_shorter_url" class="uk-button uk-button-primary">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
-
 </html>

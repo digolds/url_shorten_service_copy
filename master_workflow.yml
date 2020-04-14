@@ -15,6 +15,7 @@ phases:
 
   build:
     commands:
+      - aws s3 cp --recursive views/ s3://shorten-url-service/
       - cd handlers/
       - zip -r $CODEBUILD_RESOLVED_SOURCE_VERSION.zip .
       - aws s3 cp $CODEBUILD_RESOLVED_SOURCE_VERSION.zip s3://$S3_BUCKET/$SERVERLESS_PREFIX/ --sse aws:kms
