@@ -23,7 +23,14 @@ def generate_a_shorter_url(event, context):
     response = dynamo.put_item(Item={'Id': id, 'original_url': original_url})
     logger.info('## Dynamodb put_item result')
     logger.info(response)
-    return {'statusCode': 200, 'body': json.dumps({'Id': id})}
+    return {
+        'statusCode': 200,
+        'body': json.dumps({'Id': id}),
+        'headers': {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        }
+    }
 
 
 def generate_id(number):
