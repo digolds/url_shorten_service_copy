@@ -7,9 +7,36 @@ provider "aws" {
   region  = "us-east-2"
 }
 
+data "aws_iam_policy_document" "self_policy" {
+  statement {
+    sid    = "Stmt1529862213126"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "arn:aws:s3:::${local.bucket_name}/*",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
+}
+
+locals {
+  bucket_name = "shorten-url-service"
+}
+
+
 resource "aws_s3_bucket" "static_web_site" {
-  bucket = "shorten-url-service"
+  bucket = local.bucket_name
   acl    = "public-read"
+
+  policy = data.aws_iam_policy_document.self_policy.json
 
   website {
     index_document = "index.html"
