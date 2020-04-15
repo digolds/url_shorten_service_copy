@@ -7,7 +7,9 @@ env:
 phases:
   install:
     commands:
-      - echo "install step"
+      - echo "install dependency"
+      - pip install pymemcache elasticache-auto-discovery
+      - echo "vulnerability scanner"
 
   pre_build:
     commands:
