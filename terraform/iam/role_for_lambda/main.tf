@@ -69,6 +69,34 @@ data "aws_iam_policy_document" "lambda_access_to_aws_services" {
       data.terraform_remote_state.urls_table_state.outputs.table_obj.arn,
     ]
   }
+
+  statement {
+    sid    = "LambdaAccessToElasticMemcache"
+    effect = "Allow"
+
+    actions = [
+      "elasticache:*",
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
+
+  statement {
+    sid    = "LambdaAccessToEc2"
+    effect = "Allow"
+
+    actions = [
+      "ec2:CreateNetworkInterface",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DeleteNetworkInterface"
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
 }
 
 data "terraform_remote_state" "urls_table_state" {
