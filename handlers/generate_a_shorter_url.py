@@ -8,6 +8,8 @@ logger.setLevel(logging.INFO)
 
 import boto3
 
+import elastic_cache_helper
+
 
 def generate_a_shorter_url(event, context):
     id = generate_id(7)
@@ -23,6 +25,7 @@ def generate_a_shorter_url(event, context):
     response = dynamo.put_item(Item={'Id': id, 'original_url': original_url})
     logger.info('## Dynamodb put_item result')
     logger.info(response)
+    elastic_cache_helper.get_elastic_cache_client().set(id, original_url)
     return {
         'statusCode': 200,
         'body': json.dumps({'Id': id}),
