@@ -21,5 +21,4 @@ vendor
 .DS_Store
 # Intermediate file for testing
 kubeconfig
-package
 __pycache__
