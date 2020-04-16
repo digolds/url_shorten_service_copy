@@ -8,7 +8,7 @@ phases:
   install:
     commands:
       - echo "install dependency"
-      - pip install pymemcache elasticache-auto-discovery
+      - pip install --target ./package pymemcache elasticache-auto-discovery
       - echo "vulnerability scanner"
 
   pre_build:
@@ -20,6 +20,7 @@ phases:
       - aws s3 cp --recursive views/ s3://shorten-url-service/
       - cd handlers/
       - zip -r $CODEBUILD_RESOLVED_SOURCE_VERSION.zip .
+      - zip -r $CODEBUILD_RESOLVED_SOURCE_VERSION.zip ../package
       - aws s3 cp $CODEBUILD_RESOLVED_SOURCE_VERSION.zip s3://$S3_BUCKET/$SERVERLESS_PREFIX/ --sse aws:kms
 
   post_build:
