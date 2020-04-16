@@ -4,6 +4,7 @@ from handlers import elastic_cache_helper
 
 class TestMemcacheClient(unittest.TestCase):
     def test_client_creation_status(self):
+        pass
         client = elastic_cache_helper.get_elastic_cache_client()
         self.assertTrue(client is not None)
     
