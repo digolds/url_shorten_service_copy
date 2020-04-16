@@ -8,6 +8,7 @@ class TestMemcacheClient(unittest.TestCase):
         self.assertTrue(client is not None)
     
     def test_client_get_status(self):
+        pass
         client = elastic_cache_helper.get_elastic_cache_client()
         test_key = 'key'
         test_value = 'test value'
