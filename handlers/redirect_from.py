@@ -14,9 +14,9 @@ def redirect_from(event, context):
         if not Id:
             return {'error_msg': 'Empty Id'}
         # 2. opt for getting url from elastic memcache
-        url_from_cache = elastic_cache_helper.get_elastic_cache_client().get(Id).decode('utf-8')
+        url_from_cache = elastic_cache_helper.get_elastic_cache_client().get(Id)
         if url_from_cache:
-            return _generate_redirect_response(url_from_cache)
+            return _generate_redirect_response(url_from_cache.decode('utf-8'))
 
         # 3. back to dynamodb to get url
         dynamo = boto3.resource('dynamodb').Table(os.environ['TABLE_NAME'])
