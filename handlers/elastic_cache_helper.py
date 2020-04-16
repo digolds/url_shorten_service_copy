@@ -2,8 +2,8 @@ import time
 import uuid
 import sys
 import socket
-from handlers.package import elasticache_auto_discovery
-from handlers.package.pymemcache.client.hash import HashClient
+from .package import elasticache_auto_discovery
+from .package.pymemcache.client.hash import HashClient
 
 memcache_client = None
 
