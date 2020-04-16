@@ -22,3 +22,5 @@ vendor
 # Intermediate file for testing
 kubeconfig
 __pycache__
+!package/__init__.
+package
