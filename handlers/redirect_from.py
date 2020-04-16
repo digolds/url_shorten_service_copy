@@ -2,7 +2,7 @@ import boto3
 from botocore.exceptions import ClientError
 import os
 
-import elastic_cache_helper
+from handlers import elastic_cache_helper
 
 def _generate_redirect_response(real_url):
     return {'statusCode': 301, 'headers': {'Location': real_url}}
