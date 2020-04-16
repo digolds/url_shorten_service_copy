@@ -2,8 +2,8 @@ import time
 import uuid
 import sys
 import socket
-import package.elasticache_auto_discovery as elasticache_auto_discovery
-import package.pymemcache.client.hash.HashClient as HashClient
+import elasticache_auto_discovery
+import pymemcache
 
 memcache_client = None
 
@@ -16,5 +16,5 @@ def get_elastic_cache_client():
     elasticache_config_endpoint = "url-resource-cluster.yaeyym.cfg.use2.cache.amazonaws.com:11211"
     nodes = elasticache_auto_discovery.discover(elasticache_config_endpoint)
     nodes = map(lambda x: (x[1], int(x[2])), nodes)
-    memcache_client = HashClient(nodes)
+    memcache_client = pymemcache.client.hash.HashClient(nodes)
     return memcache_client

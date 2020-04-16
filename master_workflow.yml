@@ -8,7 +8,7 @@ phases:
   install:
     commands:
       - echo "install dependency"
-      - pip install --target ./handlers/package pymemcache elasticache-auto-discovery
+      - pip install --target handlers/ pymemcache elasticache-auto-discovery
       - echo "vulnerability scanner"
 
   pre_build:
