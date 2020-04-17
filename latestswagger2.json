@@ -1,0 +1,42 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "2020-04-12T13:35:14Z",
+    "title" : "urlsAPI"
+  },
+  "host" : "mv0kavnk18.execute-api.us-east-2.amazonaws.com",
+  "basePath" : "/staging",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/" : {
+      "post" : {
+        "parameters" : [ {
+          "name" : "Content-Type",
+          "in" : "header",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : { },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:120699691161:function:generate_a_shorter_url/invocations",
+          "passthroughBehavior" : "when_no_match",
+          "httpMethod" : "POST",
+          "timeoutInMillis" : 29000,
+          "type" : "aws_proxy"
+        }
+      }
+    },
+    "/{id+}" : {
+      "get" : {
+        "responses" : { },
+        "x-amazon-apigateway-integration" : {
+          "uri" : "arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:120699691161:function:redirect_from/invocations",
+          "passthroughBehavior" : "when_no_match",
+          "httpMethod" : "POST",
+          "timeoutInMillis" : 29000,
+          "type" : "aws_proxy"
+        }
+      }
+    }
+  }
+}

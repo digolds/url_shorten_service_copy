@@ -3,6 +3,7 @@ env:
   variables:
     S3_BUCKET: "codepipeline-us-east-2-709900867590"
     SERVERLESS_PREFIX: "master_workflow/serverless"
+    SWAGGER_UI_BUCKET: "swagger-ui-for-url-shorten-service"
 
 phases:
   install:
@@ -21,6 +22,8 @@ phases:
       - cd handlers/
       - zip -r $CODEBUILD_RESOLVED_SOURCE_VERSION.zip .
       - aws s3 cp $CODEBUILD_RESOLVED_SOURCE_VERSION.zip s3://$S3_BUCKET/$SERVERLESS_PREFIX/ --sse aws:kms
+      - cd ..
+      - aws s3 cp swagger-ui s3://$SWAGGER_UI_BUCKET/ --sse aws:kms --recursive
 
   post_build:
     commands:
