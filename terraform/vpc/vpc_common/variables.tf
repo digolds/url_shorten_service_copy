@@ -15,7 +15,21 @@ variable "newbits_for_cache" {
   type = number
 }
 
+variable "newbits_for_public_subnet" {
+  type = number
+}
+
 variable "port_memcache" {
   type    = number
   default = 11211
+}
+
+variable "should_attach_nat_to_lambda" {
+  type    = bool
+  default = false
+}
+
+variable "should_attach_nat_to_cache" {
+  type    = bool
+  default = false
 }

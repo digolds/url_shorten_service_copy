@@ -8,12 +8,13 @@ provider "aws" {
 }
 
 module "vpc_app" {
-  source             = "../vpc_common"
-  cidr_block         = "10.23.0.0/16"
-  vpc_name           = "vpc_app"
-  newbits_for_lambda = 5
-  newbits_for_cache  = 8
-  port_memcache      = 11211
+  source                    = "../vpc_common"
+  cidr_block                = "10.23.0.0/16"
+  vpc_name                  = "vpc_app"
+  newbits_for_lambda        = 5
+  newbits_for_cache         = 8
+  newbits_for_public_subnet = 0
+  port_memcache             = 11211
 }
 
 output "vpc_instance" {
@@ -26,6 +27,10 @@ output "lambda_subnets" {
 
 output "cache_subnets" {
   value = module.vpc_app.cache_subnets
+}
+
+output "public_subnets" {
+  value = module.vpc_app.public_subnets
 }
 
 output "security_group_ins" {
