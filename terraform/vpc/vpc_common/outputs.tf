@@ -17,3 +17,7 @@ output "public_subnets" {
 output "lambda_route_tables" {
   value = aws_route_table.lambda_subnets_route_tables
 }
+
+output "cache_route_tables" {
+  value = aws_route_table.cache_subnets_route_tables
+}

@@ -43,6 +43,10 @@ output "lambda_route_tables" {
   value = module.vpc_app.lambda_route_tables
 }
 
+output "cache_route_tables" {
+  value = module.vpc_app.cache_route_tables
+}
+
 output "port_for_memcache" {
   value = local.port_for_memcache
 }

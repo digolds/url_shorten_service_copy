@@ -40,3 +40,7 @@ output "public_subnets" {
 output "lambda_route_tables" {
   value = module.vpc_codebuild.lambda_route_tables
 }
+
+output "cache_route_tables" {
+  value = module.vpc_codebuild.cache_route_tables
+}

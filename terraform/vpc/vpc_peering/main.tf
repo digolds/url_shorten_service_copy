@@ -50,7 +50,7 @@ resource "aws_route" "codebuild_subnets_to_memcache_subnets" {
 }
 
 resource "aws_route" "memcache_subnets_to_codebuild_subnets" {
-  for_each                  = data.terraform_remote_state.vpc_app_state.outputs.lambda_route_tables
+  for_each                  = data.terraform_remote_state.vpc_app_state.outputs.cache_route_tables
   route_table_id            = each.value.id
   destination_cidr_block    = data.terraform_remote_state.vpc_codebuild_state.outputs.vpc_instance.cidr_block
   vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering.id
