@@ -2,6 +2,8 @@
 
 ## make use of terraform to provision AWS services
 
+### Stage ENV
+
 * role_for_lambda depend on urls_table
 * memcached_for_url_resource depend on vpc_app
 * lambda_functions depend on urls_table, role_for_lambda, vpc_app
@@ -101,3 +103,13 @@ After successfully provisioning, create CodeBuild manually and update policy usi
     ]
 }
 ```
+
+### Prod ENV
+
+* prod_urls_table
+* prod_role_for_lambda
+* (vpc_prod, vpc_peering_prod)
+* memcached_for_url_resource
+* lambda_functions
+
+* urls_api

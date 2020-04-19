@@ -9,7 +9,7 @@ provider "aws" {
 
 module "urls_table" {
   source = "../urls_table_common"
-  env    = "urls"
+  env    = "prod_urls"
 }
 
 output "table_obj" {
