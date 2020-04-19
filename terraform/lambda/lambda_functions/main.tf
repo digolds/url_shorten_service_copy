@@ -8,13 +8,15 @@ provider "aws" {
 }
 
 module "redirect_from_function" {
-  source = "../common"
+  source        = "../common"
   function_name = "redirect_from"
+  handler_name  = "redirect_from"
 }
 
 module "generate_a_shorter_url_function" {
-  source = "../common"
+  source        = "../common"
   function_name = "generate_a_shorter_url"
+  handler_name  = "generate_a_shorter_url"
 }
 
 output "redirect_from_function_obj" {
