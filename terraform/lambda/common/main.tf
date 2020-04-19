@@ -11,7 +11,7 @@ resource "aws_lambda_function" "lambda_function_instance" {
   runtime          = "python3.6"
   vpc_config {
     subnet_ids         = [for k, v in data.terraform_remote_state.vpc_app_state.outputs.lambda_subnets : v.id]
-    security_group_ids = [data.terraform_remote_state.vpc_app_state.outputs.security_group_ins.id, ]
+    security_group_ids = [data.terraform_remote_state.vpc_peering_state.outputs.sg_for_lambda.id, ]
   }
 
   environment {
@@ -26,6 +26,14 @@ data "terraform_remote_state" "vpc_app_state" {
 
   config = {
     path = "../../vpc/vpc_app/terraform.tfstate"
+  }
+}
+
+data "terraform_remote_state" "vpc_peering_state" {
+  backend = "local"
+
+  config = {
+    path = "../../vpc/vpc_peering/terraform.tfstate"
   }
 }
 

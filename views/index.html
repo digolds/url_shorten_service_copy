@@ -29,7 +29,7 @@
             });
             $("#submitBtn").click(function () {
                 var url = $("#myInput").val();
-                var endPoint = 'https://mv0kavnk18.execute-api.us-east-2.amazonaws.com/staging';
+                var endPoint = 'https://ydjv5adz76.execute-api.us-east-2.amazonaws.com/staging';
                 $.post(endPoint,
                     JSON.stringify({ "original_url": url }),
                     function (data, status, jqXHR) {
@@ -46,6 +46,7 @@
         });
     </script>
 </head>
+
 <body>
     <div id="main" class='uk-container uk-container-small'>
         <div class="uk-flex uk-flex-center uk-position-center">
@@ -74,4 +75,5 @@
         </div>
     </div>
 </body>
+
 </html>

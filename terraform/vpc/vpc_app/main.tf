@@ -7,14 +7,20 @@ provider "aws" {
   region  = "us-east-2"
 }
 
+locals {
+  vpc_name          = "vpc_app"
+  port_for_memcache = 11211
+  cidr_block        = "10.23.0.0/16"
+}
+
+
 module "vpc_app" {
   source                    = "../vpc_common"
-  cidr_block                = "10.23.0.0/16"
-  vpc_name                  = "vpc_app"
+  cidr_block                = local.cidr_block
+  vpc_name                  = local.vpc_name
   newbits_for_lambda        = 5
   newbits_for_cache         = 8
-  newbits_for_public_subnet = 0
-  port_memcache             = 11211
+  newbits_for_public_subnet = 12
 }
 
 output "vpc_instance" {
@@ -33,6 +39,10 @@ output "public_subnets" {
   value = module.vpc_app.public_subnets
 }
 
-output "security_group_ins" {
-  value = module.vpc_app.security_group_ins
+output "lambda_route_tables" {
+  value = module.vpc_app.lambda_route_tables
+}
+
+output "port_for_memcache" {
+  value = local.port_for_memcache
 }
