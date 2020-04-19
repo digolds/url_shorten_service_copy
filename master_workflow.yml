@@ -15,19 +15,3 @@ phases:
   pre_build:
     commands:
       - python -B -m unittest -v tests/*
-
-  build:
-    commands:
-      - aws s3 cp --recursive views/ s3://shorten-url-service/
-      - cd handlers/
-      - zip -r $CODEBUILD_RESOLVED_SOURCE_VERSION.zip .
-      - aws s3 cp $CODEBUILD_RESOLVED_SOURCE_VERSION.zip s3://$S3_BUCKET/$SERVERLESS_PREFIX/ --sse aws:kms
-      - cd ..
-      - mkdir swagger-ui/v1
-      - aws apigateway get-export --parameters extensions='apigateway' --rest-api-id ydjv5adz76 --stage-name staging --export-type swagger swagger-ui/v1/url_shorten_service.json
-      - aws s3 cp swagger-ui s3://$SWAGGER_UI_BUCKET/ --recursive
-
-  post_build:
-    commands:
-      - aws lambda update-function-code --function-name redirect_from --s3-bucket $S3_BUCKET --s3-key $SERVERLESS_PREFIX/$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
-      - aws lambda update-function-code --function-name generate_a_shorter_url --s3-bucket $S3_BUCKET --s3-key $SERVERLESS_PREFIX/$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
