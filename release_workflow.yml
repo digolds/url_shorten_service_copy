@@ -6,8 +6,10 @@ env:
     SWAGGER_UI_BUCKET: "swagger-ui-for-url-shorten-service"
 
 phases:
-  install:
+  post_build:
     commands:
-      - echo "download package"
-      - aws s3 cp s3://$S3_BUCKET/$SERVERLESS_PREFIX/$CODEBUILD_RESOLVED_SOURCE_VERSION.zip $CODEBUILD_RESOLVED_SOURCE_VERSION.zip --sse aws:kms
-      - echo "unzip package"
+      - echo "deploy package to lambda"
+      - aws lambda update-function-code --function-name prod_redirect_from --s3-bucket $S3_BUCKET --s3-key $SERVERLESS_PREFIX/$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
+      - aws lambda update-function-code --function-name prod_generate_a_shorter_url --s3-bucket $S3_BUCKET --s3-key $SERVERLESS_PREFIX/$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
+      - echo "deploy views"
+      - echo "deploy swagger api doc"
