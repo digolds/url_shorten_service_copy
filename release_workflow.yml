@@ -6,7 +6,7 @@ env:
     SWAGGER_UI_BUCKET: "swagger-ui-for-url-shorten-service"
 
 phases:
-  download:
+  install:
     commands:
       - echo "download package"
       - aws s3 cp s3://$S3_BUCKET/$SERVERLESS_PREFIX/$CODEBUILD_RESOLVED_SOURCE_VERSION.zip $CODEBUILD_RESOLVED_SOURCE_VERSION.zip --sse aws:kms
