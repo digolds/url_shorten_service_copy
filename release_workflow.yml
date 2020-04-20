@@ -2,6 +2,7 @@ version: 0.2
 env:
   variables:
     S3_BUCKET: "codepipeline-us-east-2-709900867590"
+    WEBPAGES_S3_BUCKET: "shorten-url-service"
     SERVERLESS_PREFIX: "master_workflow/serverless"
     SWAGGER_UI_BUCKET: "swagger-ui-for-url-shorten-service"
 
@@ -15,5 +16,6 @@ phases:
       - aws s3 cp s3://$S3_BUCKET/$SERVERLESS_PREFIX/All_$CODEBUILD_RESOLVED_SOURCE_VERSION.zip All_$CODEBUILD_RESOLVED_SOURCE_VERSION.zip --sse aws:kms
       - unzip All_$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
       - echo "deploy views"
+      - aws s3 cp --recursive views/ s3://$WEBPAGES_S3_BUCKET/
       - echo "deploy swagger api doc"
       - aws s3 cp swagger-ui s3://$SWAGGER_UI_BUCKET/ --recursive
