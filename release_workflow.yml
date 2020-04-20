@@ -13,6 +13,7 @@ phases:
       - aws lambda update-function-code --function-name prod_redirect_from --s3-bucket $S3_BUCKET --s3-key $SERVERLESS_PREFIX/$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
       - aws lambda update-function-code --function-name prod_generate_a_shorter_url --s3-bucket $S3_BUCKET --s3-key $SERVERLESS_PREFIX/$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
       - echo "download package and unzip it"
+      - echo All_$CODEBUILD_RESOLVED_SOURCE_VERSION
       - aws s3 cp s3://$S3_BUCKET/$SERVERLESS_PREFIX/All_$CODEBUILD_RESOLVED_SOURCE_VERSION.zip All_$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
       - unzip All_$CODEBUILD_RESOLVED_SOURCE_VERSION.zip
       - echo "deploy views"
