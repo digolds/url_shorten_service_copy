@@ -9,8 +9,8 @@ provider "aws" {
 
 //Create a bucket for hosting web
 module "web_bucket" {
-  source                = "../public_web_basic"
-  bucket_name = "swagger_ui_for_stage"
+  source      = "../public_web_basic"
+  bucket_name = "swagger-ui-for-stage"
 }
 
 output "web_host_s3" {

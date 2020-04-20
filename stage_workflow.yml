@@ -3,8 +3,8 @@ env:
   variables:
     S3_BUCKET: "codepipeline-us-east-2-709900867590"
     SERVERLESS_PREFIX: "master_workflow/serverless"
-    SWAGGER_UI_BUCKET: "swagger-ui-for-url-shorten-service"
-    WEBPAGES_S3_BUCKET: "shorten-url-service"
+    SWAGGER_UI_BUCKET: "swagger-ui-for-stage"
+    WEBPAGES_S3_BUCKET: "static-web-for-stage"
 
 phases:
   install:

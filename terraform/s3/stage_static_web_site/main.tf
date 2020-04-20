@@ -9,8 +9,8 @@ provider "aws" {
 
 //Create a bucket for hosting web
 module "web_bucket" {
-  source                = "../public_web_basic"
-  bucket_name = "static_web_for_stage"
+  source      = "../public_web_basic"
+  bucket_name = "static-web-for-stage"
 }
 
 output "web_host_s3" {
