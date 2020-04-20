@@ -14,6 +14,9 @@ phases:
 
   pre_build:
     commands:
+      - echo "generate release config"
+      - python generate_config.py
+      - echo "run unit test"
       - python -B -m unittest -v tests/*
 
   build:

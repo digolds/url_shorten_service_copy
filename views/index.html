@@ -11,6 +11,7 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/uikit.min.js"></script>
     <script src="/js/uikit-icons.min.js"></script>
+    <script src="/js/config.min.js"></script>
     <script>
         const copyToClipboard = str => {
             const el = document.createElement('textarea');
@@ -29,7 +30,7 @@
             });
             $("#submitBtn").click(function () {
                 var url = $("#myInput").val();
-                var endPoint = 'https://ydjv5adz76.execute-api.us-east-2.amazonaws.com/staging';
+                var endPoint = url_shorten_service.end_point_generating_shorter_url;
                 $.post(endPoint,
                     JSON.stringify({ "original_url": url }),
                     function (data, status, jqXHR) {
