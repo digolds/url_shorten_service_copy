@@ -111,5 +111,4 @@ After successfully provisioning, create CodeBuild manually and update policy usi
 * (vpc_prod, vpc_peering_prod)
 * memcached_for_url_resource
 * lambda_functions
-
 * urls_api
