@@ -1,13 +1,3 @@
----
-title: "从提出想法->对外发布产品--如何0成本在github上缩短该过程"
-date: 2020-03-17T12:21:58+06:00
-description : ""
-type: post
-image: images/blog/github.jpg
-author: 郑思龙
-tags: ["软件研发流程", "持续集成", "CI/CD", "云计算", "持续部署", "软件自动化", "Infrastructure as Code"]
----
-
 # Craft a shorten URL service base on AWS in 1 day
 
 With Cloud Computing becoming popular, uniform and standard software development methodologies are arising, meaning that companies can leverage out-of-the-box infrastructures provided by Cloud providers, such as AWS, to craft complex yet competitive software product in order to domain markets in a short time, sometime, even in a day. Here, I will show you how to combine some sort of services provided by AWS, to build a production-grade shorten URL service with high availability, resiliency and maintainability in just one day!
@@ -37,11 +27,23 @@ Here is a bird's-eye view for the url shorten service, which can be futher broke
 * **CI/CD**: the upside part with `red` lines connecting, which is mainly used for developing the service
 * **Service**: the bottom part with `black` lines connecting, which is the url shorten service itself
 
-![](http://localhost:1313/images/blog/url-shorten-service-design.png)
+![](https://raw.githubusercontent.com/digolds/url_shorten_service/master/url-shorten-service.png?token=AI5CXFLAN6P35LGBGFIIAGC6T6WFK)
 
 Let me walk you through each part and explain the idea behind it.
 
+1. CI/CD
+
 The **CI/CD** part is based on `trunk-based` development, so there are 3 auto-build workflows need to be set up. one for `master` branch, to which each commit will trigger a build to run unit tests, do vulnerability detect etc., in order to get feedback for the modification as quickly as possible. The other workflow is for the `release` branch, to which each commit will trigger a build to run unit tests, do vulnerability detect, deploy the update to stage environment for testing. The last workflow is used for releasing features or patches to the production environment with the help of `git tag`. The status results of all these workflows will automatically spread out by email to each engineers, including developers, testers, devops engineers etc. When the release workflows pass, there are many acvities should be done on top of each environment (staging and prod), such as update the Python code to lambda, swagger api and front end pages to S3 etc. Let's zoom in to find out more details about the choosen AWS services that compose of the **CI/CD** part and its workflow.
+
+![](https://raw.githubusercontent.com/digolds/url_shorten_service/master/url-shorten-service-cicd-workflow.png?token=AI5CXFJBGFFZC6OVQXGOK4C6T6V5C)
+
+* 1 step: Engineers commit code to github
+* 2 step: AWS CodeBuild will be triggered by each commit on each branch or tags. Each CodeBuild is paired with a workflow and there are 3 workflows each with a specific scenarios, namely master, stage, release workflow. The execute order for the workflows is master->stage->release
+* 3 step: After stage workflow pass, there are some activitis need to be executed in stage environment, such as deploy front end pages and swagger ui pages to AWS S3 service.
+* 4 step: Instead deploying front end related objects to S3, there should have one more step to update lambda functions in other VPC
+* 5 step: When stage environment is ready and tested by quality engineers, there should have an mechanism that automatically duplicate stage environment to prod environment, this is where release workflow come to play. it retrieves package from S3 and deploy the front end assets to S3 in prod environment
+* 6 step: Update the lambda functions in prod environment
+* x step: Each workflow is configured with CloudWatch Event, SNS, SNS Topic, when engineers commit to github, any change in these commits will notify all engineers by email
 
 ## Approach
 The approach you took, the service you compared and why choose these services by the end.
