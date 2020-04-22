@@ -43,7 +43,22 @@ The **CI/CD** part is based on `trunk-based` development, so there are 3 auto-bu
 * 4 step: Instead deploying front end related objects to S3, there should have one more step to update lambda functions in other VPC
 * 5 step: When stage environment is ready and tested by quality engineers, there should have an mechanism that automatically duplicate stage environment to prod environment, this is where release workflow come to play. it retrieves package from S3 and deploy the front end assets to S3 in prod environment
 * 6 step: Update the lambda functions in prod environment
-* x step: Each workflow is configured with CloudWatch Event, SNS, SNS Topic, when engineers commit to github, any change in these commits will notify all engineers by email
+* x step: Each workflow is configured with CloudWatch Event, SNS, SNS Topic, when engineers commit to github, any changes in these commits will notify all engineers by email
+
+2. Service
+
+The **Service** is compose of VPC, NAT, ElasticCache, Lambda, DynamoDB, API Gateway. DynamoDB acts as storage in which url resources are resided, meanwhile, ElasticCache stands between Lambda and DynamoDB in order to cache the url resources for lower latency. The application run statelessly in Lambda Function, where generating shorter url and redirecting original url handlers happens. Lambda Function need Internet access, so NAT and IGW should be attached to VPC where lambda functions exist. All the requests are issued by end users, and pass through API Gateway to the corresponding lambda function. The service is designed with high availability, so service instances, such as ElasticCache, Lambda Function, are spread across different Available Zones. There are 2 copies of the service in prod and staging environments with a difference that fewer resources are allocated to staging environment. This is a outline for back end system, let's take our focus to the front end pages.
+
+All static pages, including url shorten service pages, swagger ui pages etc., are hosted on S3 service with a front door of CloudFront to accelerate visiting speed. [digolds.top](https://digolds.top) is the domain point to the service, Route53 resolve it to the corresponding CloudFront address, and secure it with AWS ACM service.
+
+With the front end and back end systems building on top of high available and stable AWS service, the url shorten service can serve hundreds of thousands of traffics with ease. Let's review following workflow to decipher how components act to each other.
+
+![](./url-shorten-service-service-workflow.png)
+
+* 1 step: End users visit [digolds.top](https://digolds.top) in browser. Route 53 resolve the domain name to IP address that points to CloudFront, where url shorten service pages are cached. Then, users may submit an operation to geneate a shorter url in browser, the request will pass to API Gateway
+* 2 step: API Gateway will transform the request to lambda function evenly across Available Zones, where each lambda function instance will first get url resources from EleasticCache
+* 3 step: ElasticCache will cache part of url resources and provide in-memory access to the resources
+* 4 step: if requesting url resource is not exist in ElasticCache, then lambda function will get access to DynamoDB through NAT and IGW
 
 ## Approach
 The approach you took, the service you compared and why choose these services by the end.
