@@ -1,4 +1,4 @@
-# Craft a shorten URL service base on AWS in 1 day
+# Craft a shorten URL service base on AWS in just 1 day
 
 With Cloud Computing becoming popular, uniform and standard software development methodologies are arising, meaning that companies can leverage out-of-the-box infrastructures provided by Cloud providers, such as AWS, to craft complex yet competitive software product in order to domain markets in a short time, sometime, even in a day. Here, I will show you how to combine some sort of services provided by AWS, to build a production-grade shorten URL service with high availability, resiliency and maintainability in just one day!
 
@@ -58,7 +58,9 @@ With the front end and back end systems building on top of high available and st
 * 1 step: End users visit [digolds.top](https://digolds.top) in browser. Route 53 resolve the domain name to IP address that points to CloudFront, where url shorten service pages are cached. Then, users may submit an operation to geneate a shorter url in browser, the request will pass to API Gateway
 * 2 step: API Gateway will transform the request to lambda function evenly across Available Zones, where each lambda function instance will first get url resources from EleasticCache
 * 3 step: ElasticCache will cache part of url resources and provide in-memory access to the resources
-* 4 step: if requesting url resource is not exist in ElasticCache, then lambda function will get access to DynamoDB through NAT and IGW
+* 4 step: if requesting url resource is not exist in ElasticCache, then lambda function will get url resource from DynamoDB through NAT and IGW
+
+When you have a clear mind on the details of what makes of url shorten service, it's time to consider why we craft it with that fashion! Go ahead and read it.
 
 ## Approach
 The approach you took, the service you compared and why choose these services by the end.
