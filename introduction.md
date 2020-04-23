@@ -18,6 +18,8 @@ Feel free to read the guide from start to finish or skip around to whatever part
 
 a shorter url can be shared in any kind of digital contents, such as Posts on SNS, newspaper etc. Anyone who has internet access, can visit the shorter url without limits, so the traffics [digolds.top](https://digolds.top) serve are public to the world.
 
+The back end apis are public at [api.digolds.top](https://api.digolds.top) with swagger ui.
+
 You may urge to know how [digolds.top](https://digolds.top) stores these shorter urls and makes them easy to access, how to make it serve hundreds of thousands of end users on internet, and how to build up a foundation for better development of shipping new features to [digolds.top](https://digolds.top). Well, with all these questions in mind, Let's dive into the following part.
 
 ## Service design
@@ -27,7 +29,7 @@ Here is a bird's-eye view for the url shorten service, which can be futher broke
 * **CI/CD**: the upside part with `red` lines connecting, which is mainly used for developing the service
 * **Service**: the bottom part with `black` lines connecting, which is the url shorten service itself
 
-![](./url-shorten-service.png)
+![](https://raw.githubusercontent.com/digolds/url_shorten_service_copy/master/url-shorten-service.png)
 
 Let me walk you through each part and explain the idea behind it.
 
@@ -35,7 +37,7 @@ Let me walk you through each part and explain the idea behind it.
 
 The **CI/CD** part is based on `trunk-based` development, so there are 3 auto-build workflows need to be set up. one for `master` branch, to which each commit will trigger a build to run unit tests, do vulnerability detect etc., in order to get feedback for the modification as quickly as possible. The other workflow is for the `release` branch, to which each commit will trigger a build to run unit tests, do vulnerability detect, deploy the update to stage environment for testing. The last workflow is used for releasing features or patches to the production environment with the help of `git tag`. The status results of all these workflows will automatically spread out by email to each engineers, including developers, testers, devops engineers etc. When the release workflows pass, there are many acvities should be done on top of each environment (staging and prod), such as update the Python code to lambda, swagger api and front end pages to S3 etc. Let's zoom in to find out more details about the choosen AWS services that compose of the **CI/CD** part and its workflow.
 
-![](./url-shorten-service-cicd-workflow.png)
+![](https://raw.githubusercontent.com/digolds/url_shorten_service_copy/master/url-shorten-service-cicd-workflow.png)
 
 * 1 step: Engineers commit code to github
 * 2 step: AWS CodeBuild will be triggered by each commit on each branch or tags. Each CodeBuild is paired with a workflow and there are 3 workflows each with a specific scenarios, namely master, stage, release workflow. The execute order for the workflows is master->stage->release
@@ -53,27 +55,48 @@ All static pages, including url shorten service pages, swagger ui pages etc., ar
 
 With the front end and back end systems building on top of high available and stable AWS service, the url shorten service can serve hundreds of thousands of traffics with ease. Let's review following workflow to decipher how components act to each other.
 
-![](./url-shorten-service-service-workflow.png)
+![](https://raw.githubusercontent.com/digolds/url_shorten_service_copy/master/url-shorten-service-service-workflow.png)
 
 * 1 step: End users visit [digolds.top](https://digolds.top) in browser. Route 53 resolve the domain name to IP address that points to CloudFront, where url shorten service pages are cached. Then, users may submit an operation to geneate a shorter url in browser, the request will pass to API Gateway
 * 2 step: API Gateway will transform the request to lambda function evenly across Available Zones, where each lambda function instance will first get url resources from EleasticCache
 * 3 step: ElasticCache will cache part of url resources and provide in-memory access to the resources
 * 4 step: if requesting url resource is not exist in ElasticCache, then lambda function will get url resource from DynamoDB through NAT and IGW
 
-When you have a clear mind on the details of what makes of url shorten service, it's time to consider why we craft it with that fashion! Go ahead and read it.
+When you have a clear mind on the details of what makes of url shorten service, it's time to consider why we craft it with that fashion. Go ahead and read it!
 
 ## Approach
-The approach you took, the service you compared and why choose these services by the end.
-What’s the advantages compared one or the other. What’s the limitation for this service?
-What’s the trade off and why made such decision?
+
+The url shorten service is a stateful application, which means there should have a data layer to store url resources. Here, we choose DynamoDB as the main storage for url shorten service. It's a key-value database and fully managed with signle-digit millisecond performance at any scale.
+
+Although DynamoDB can provide great performance for getting and setting data, it still limits by its read and write capacity. So we choose a middleware called ElasticCahce to mitigate the workloads in data layer. The middleware is a Memcached-compatible in-memory key-value store cluster, which brings the benifits of ultra performance, fully managed, easy to scale etc., making it adaptable for scenario where data should be frequently accessed in memory.
+
+After setting up data layer, the next step is to build up application layer, this is where Lambda Function come to play. As part of serverless foundation, Lambda Function bring a lot of benifits, including no servers to manage, continuous scaling, consistent performance etc. However, there are some drawbacks exist in Lambda Function. One is that, you can not host complex logic, such as image processing, in lambda function instance for the reason of limit storage. Instead, there are timeout limit for lambda function, which means time-comsuming task is not well fit for Lambda Function. Last but not the least, if you specific VPC for lambda function, you must pay attention to the issue that ENIs may be used up by a large number of concurrently active lambda function instance in that VPC.
+
+As for the url shorten service, the permitted operations exposuring to end users are simple, that is generating shorter url and redirecting to original url. It seems not necessary to boost a fleet of EC2 instances to host the light-weight application, not to mention that you have to put effort to manage these EC2 instance, such as updating patch for OS, designing a strategy for auto scale, and doing load balance among them etc.
+
+The architecture design mentioned above is well fit for the begining phase of url shorten service for the reason that you can promote a not so bad service quickly to market with little effort. However, when more users begin to use this service, it's time to consider leveraging EC2 instance to serve them from the point of cutting down cost. Instead, as the the number of url resources burst, there should have a place (something like S3) to back up these resources for the sake of disaster recovery.
+
+In short, there is not a solution fit to all, as business growing, there may have more features to add. New solution should be developed to couple with new requirements from the view of saving cost, increasing security, keeping high availability, scoping regulation and compliance etc.
+
+The over all architecture is designed in a single AWS account, however, in reality, multiple accounts should be created to isolate different environments, such as a security account for manage IAM users, a prod account for real online service, a staging account for internal test, and of course the mgnt account for CI/CD activity.
 
 ## Business Outcome
+
+The potential business outcomes of url shorten service may include customers outcomes and company outcomes.
+
+For customers outcomes, marketers can exposure their brands to market without spending a dollar by making use of it to generate shorter urls. End users can easily remember the shorter urls and get access to it.
+
+For company outcomes, the goal of url shorten service in the first phase is to acquire more potential customers and end users, which is the foundation for the next phase.
 Potentially the business outcome and usability for this service.
 
 ## Go Live
-What should be done before your solution go to production? Any additional features or
-function that could bring a better user experience in your mind?
+
+Although you can visit the url shorten service by typing [digolds.top](https://digolds.top) in browser, however, there are still some of things need to get done before go to production. That is, a fire wall should be configured to API Gateway in order to prohibit unhealthy traffics such as robot traffics. Instead, authentication and authority should be added to API Gateway in order to seperate url resources by individual.
+
+For a better user experience, there should have a url resources management portal, which can show how popular the urls in what platform is, including some metric such as click through rate for urls.
 
 ## Source Code
-Attach the source code at the end.
-Attach the IAM read access credential at the end.
+
+The source code is compose of handlers, terraform, views, swagger-ui, tests, and is hosted in github. The AWS resources are provisioned by terraform tool, so, the terraform folder contains 2 groups, one for staing, the other is for prod.
+
+The IAM read access credential is showed below. Feel free to play it around and give any feedbacks as good ideas appearing in your mind!
